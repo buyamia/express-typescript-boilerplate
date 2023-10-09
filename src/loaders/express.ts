@@ -3,12 +3,12 @@ import express, { Application, Handler } from 'express';
 import helmet from 'helmet';
 
 import * as morgan from '@lib/logger/morgan';
-import { Type, registerControllers } from '@lib/router';
+import { Type, registerApp } from '@lib/router';
 
 export interface ExpressLoaderArgs {
   app: Application;
   controllers: Type[];
-  middlewares?: Handler[];
+  middlewares?: Array<Handler | Function>;
 }
 
 export default ({ app, controllers, middlewares }: ExpressLoaderArgs) => {
@@ -19,9 +19,5 @@ export default ({ app, controllers, middlewares }: ExpressLoaderArgs) => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  if (middlewares && middlewares.length) {
-    app.use(...middlewares);
-  }
-
-  registerControllers(app, controllers);
+  registerApp(app, controllers, middlewares ?? []);
 };

@@ -9,8 +9,13 @@ import { addLeadingSlash, isPromiseLike, stripEndSlash } from './utils';
 /**
  * Parses routing metadata from controllers and sets up routing.
  */
-export function registerControllers(app: Application, controllers: Type[]) {
+export function registerApp(app: Application, controllers: Type[], middlewares: Array<Handler | Function>) {
   const router  = Router();
+
+  const globalMiddlewares = prepareMiddlewares(middlewares);
+  if (globalMiddlewares.length > 0) {
+    router.use(...globalMiddlewares);
+  }
 
   controllers.forEach(controller => {
     const controllerInstance = getFromContainer(controller) as ExpressClass;

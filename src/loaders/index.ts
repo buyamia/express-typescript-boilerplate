@@ -1,8 +1,9 @@
-import { PingController } from '@controllers/ping.controller';
-import { PostController } from '@controllers/post.controller';
 import { Express } from 'express';
 
+import { PingController } from '@controllers/ping.controller';
+import { PostController } from '@controllers/post.controller';
 import { LoggerInstance } from '@lib/logger';
+import { GlobalExampleMiddleware } from '@middlewares/global-example.middleware';
 
 import expressLoader from './express';
 import mongooseLoader from './mongoose';
@@ -16,6 +17,7 @@ export async function load(app: Express) {
   expressLoader({
     app,
     controllers: [PingController, PostController],
+    middlewares: [GlobalExampleMiddleware],
   });
   logger.info('Express loaded');
 }
