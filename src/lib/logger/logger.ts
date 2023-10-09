@@ -1,23 +1,35 @@
-import { format, transports, createLogger, Logger as WinstonLogger } from 'winston';
-import { config } from '../../config/config';
+import {
+  format,
+  transports,
+  createLogger,
+  Logger as WinstonLogger,
+} from 'winston';
+
+import { config } from '@config';
+
+type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+
+const loggerTransports: any[] = [];
+if (config.env === 'development') {
+  loggerTransports.push(
+    new transports.Console({
+      format: format.combine(format.cli(), format.splat()),
+    }),
+  );
+} else {
+  loggerTransports.push(new transports.Console());
+}
 
 export class Logger {
   private readonly scope: string = 'app';
   private readonly logger: WinstonLogger;
 
   constructor(scope?: string) {
-    if (!scope) this.scope = scope;
+    if (scope) this.scope = scope;
 
     this.logger = createLogger({
-      transports: [
-        new transports.Console({
-          level: config.logLevel,
-          handleExceptions: true,
-          format: config.env === 'development'
-            ? format.combine(format.json())
-            : format.combine(format.colorize(), format.simple())
-        }),
-      ],
+      level: config.logLevel,
+      transports: loggerTransports,
     });
   }
 
@@ -37,7 +49,7 @@ export class Logger {
     this.log('error', message, args);
   }
 
-  private log(level: string, message: string, args: any[]): void {
+  private log(level: LogLevel, message: string, args: any[]): void {
     this.logger[level](`[${this.scope}] ${message}`, args);
   }
 }

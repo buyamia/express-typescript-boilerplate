@@ -1,9 +1,13 @@
-export interface IPingService {
-  ping(): string
-}
+import { Service } from 'typedi';
 
-export class PingService implements IPingService {
-  public ping(): string {
-    return "pong";
+import { Logger } from '@lib/logger';
+
+@Service()
+export class PingService {
+  private readonly logger = new Logger('PingService');
+
+  public ping(pong: string = 'pong'): string {
+    this.logger.debug('ping: Replied with ' + pong);
+    return pong;
   }
 }

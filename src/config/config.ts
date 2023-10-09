@@ -2,9 +2,20 @@ import * as path from 'node:path';
 import * as dotenv from 'dotenv';
 import * as process from 'process';
 
-import { normalizePort } from './utils';
-
 dotenv.config({ path: path.join(process.cwd(), '.env') });
+
+function normalizePort(port: string): number | string | boolean {
+  const parsedPort = parseInt(port, 10);
+  if (isNaN(parsedPort)) {
+    // named pipe
+    return port;
+  }
+  if (parsedPort >= 0) {
+    // port number
+    return parsedPort;
+  }
+  return false;
+}
 
 export const config = {
   env: process.env.NODE_ENV || 'development',
@@ -14,4 +25,3 @@ export const config = {
     url: process.env.MONGODB_URL,
   },
 };
-

@@ -1,1 +1,0 @@
-export { registerHttpRoutes } from './http';
