@@ -1,31 +1,31 @@
-import { Request, Response } from 'express';
-import { Controller, Get } from '@lib/router';
+import { Response } from 'express';
+import { Controller, Get, QueryParam, Req, Res, UseBefore } from 'routing-controllers';
 import { PingService } from '@services/ping.service';
 import { ExampleMiddleware, ExampleRequest } from '@middlewares/example.middleware';
+import { Service } from 'typedi';
 
 @Controller()
+@Service()
 export class PingController {
   constructor(
     private pingService: PingService
   ) {}
 
   @Get()
-  public hello(_req: Request, res: Response) {
-    res.status(200).json({ data: 'Hello world!' });
+  public hello(@Res() res: Response) {
+    return res.status(200).json({ data: 'Hello world!' });
   }
 
-  @Get('ping')
-  public async ping(req: Request, res: Response) {
-    const data = this.pingService.ping(req.query.pong as string);
+  @Get('/ping')
+  public async ping(@QueryParam('pong') pong: string, @Res() res: Response) {
+    const data = this.pingService.ping(pong);
 
-    res.status(200).json({ data });
+    return res.status(200).json({ data });
   }
 
-  @Get({
-    path: 'example',
-    middlewares: [ExampleMiddleware],
-  })
-  public async example(req: ExampleRequest, res: Response) {
-    res.status(200).json({ example: 'Data from middleware: ' + req.additionalData });
+  @Get('/example')
+  @UseBefore(ExampleMiddleware)
+  public async example(@Req() req: ExampleRequest, @Res() res: Response) {
+    return res.status(200).json({ example: 'Data from middleware: ' + req.additionalData });
   }
 }

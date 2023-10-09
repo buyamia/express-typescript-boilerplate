@@ -53,6 +53,7 @@
     "mongoose": "^7.6.0",
     "morgan": "^1.10.0",
     "reflect-metadata": "^0.1.13",
+    "routing-controllers": "^0.10.4",
     "source-map-support": "^0.5.21",
     "typedi": "^0.10.0",
     "winston": "^3.10.0"

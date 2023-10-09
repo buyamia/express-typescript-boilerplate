@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { ExpressMiddlewareInterface } from '@lib/router';
+import { ExpressMiddlewareInterface } from 'routing-controllers';
 
 export interface ExampleRequest extends Request {
   additionalData: string;
