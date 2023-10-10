@@ -1,5 +1,6 @@
 import { Express } from 'express';
 
+import { AuthController } from '@controllers/auth.controller';
 import { PingController } from '@controllers/ping.controller';
 import { PostController } from '@controllers/post.controller';
 import { LoggerInstance } from '@lib/logger';
@@ -16,7 +17,7 @@ export async function load(app: Express) {
 
   expressLoader({
     app,
-    controllers: [PingController, PostController],
+    controllers: [AuthController, PingController, PostController],
     middlewares: [GlobalExampleMiddleware],
   });
   logger.info('Express loaded');
