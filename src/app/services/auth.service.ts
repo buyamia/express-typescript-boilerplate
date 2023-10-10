@@ -4,11 +4,17 @@ import { compare, hash } from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { Service } from 'typedi';
 
-import { IUser, User } from '@models/user';
+import { User } from '@models/user';
 
 @Service()
 export class AuthService {
   private logger = new Logger('AuthService');
+
+  public async verifyToken(token: string) {
+    const decodedToken = jwt.verify(token, config.jwtSecret as string);
+
+    return User.findById(decodedToken.sub, { password: 0 }).exec();
+  }
 
   public async login(username: string, password: string) {
     try {
@@ -24,7 +30,7 @@ export class AuthService {
         return null;
       }
 
-      return jwt.sign(user.toJSON(), config.jwtSecret as string);
+      return jwt.sign(user.toJSON(), config.jwtSecret as string, { subject: user._id.toString() });
     } catch (error) {
       this.logger.warn('Unexpected error', { error });
       return null;
@@ -35,6 +41,6 @@ export class AuthService {
     const encryptedPassword = await hash(password, 10);
     const user = await User.create({ name, username, password: encryptedPassword });
 
-    return jwt.sign(user.toJSON(), config.jwtSecret as string);
+    return jwt.sign(user.toJSON(), config.jwtSecret as string, { subject: user._id.toString() });
   }
 }
