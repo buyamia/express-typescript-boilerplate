@@ -62,5 +62,6 @@ export default ({ app, controllers, middlewares }: ExpressLoaderArgs) => {
     },
   );
 
+  app.get('/docs/swagger.json', (_req, res) => res.json(spec));
   app.use('/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(spec));
 };
